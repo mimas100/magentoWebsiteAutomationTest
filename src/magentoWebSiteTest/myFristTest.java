@@ -1,5 +1,6 @@
 package magentoWebSiteTest;
 
+import java.awt.Window;
 import java.nio.file.WatchEvent;
 import java.sql.Driver;
 import java.time.Duration;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -37,7 +39,7 @@ public class myFristTest {
 		
 	}
 
-	@Test(priority = 1)
+	@Test(priority = 1, enabled = false)
 	public void CeateAccountTest() {
 		// create Account by Link Test
 		WebElement createAnAccount = driver.findElement(By.linkText("Create an Account"));
@@ -96,7 +98,7 @@ public class myFristTest {
 		
 	}
 
-	@Test(priority = 2)
+	@Test(priority = 2, enabled = false)
 	public void logOutPage() throws InterruptedException {
 
 		driver.get(logOutPage);
@@ -110,7 +112,7 @@ WebElement LogoutMessage = driver.findElement(By.xpath("//span[@data-ui-id='page
 
 	}
 
-	@Test(priority = 3)
+	@Test(priority = 3, enabled = false)
 	public void loginTest() {
 		WebElement LoginPage = driver.findElement(By.linkText("Sign In"));
 		LoginPage.click();
@@ -133,8 +135,58 @@ String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
 	}
 	
 	
-	@Test(priority = 4)
-	public void addToWemonCard() {
+	@Test(priority = 4, enabled = false)
+	  public void addToMenSection()throws InterruptedException
+	{
+		
+		
+      WebElement MenSection = driver.findElement(By.id("ui-id-5"));
+		
+		MenSection.click();
+   	 
+   	// WebElement olOfMenItems = driver.findElement(By.className("product-items"));
+   	 
+   	WebElement olOfMenItems = driver.findElement(By.className("product-items"));
+		
+   	 List <WebElement> listOfItems = olOfMenItems.findElements(By.tagName("li"));
+   	 int AllItems = listOfItems.size();
+   	 
+   	 int randomIndexOfItem = random.nextInt(AllItems);
+   	listOfItems.get(randomIndexOfItem).click();
+   	
+   	
+	
+   	WebElement sizeOfItem = driver.findElement(By.cssSelector(".swatch-attribute-options.clearfix"));
+       List<WebElement> AllSize = sizeOfItem.findElements(By.className("swatch-option"));
+		
+   	int AllSizeCount = AllSize.size();
+   	int randomSizeIndex = random.nextInt(AllSizeCount);
+   	AllSize.get(randomSizeIndex).click();
+   	
+   	
+   	
+   	
+   	
+   	WebElement allColors= driver.findElement(By.cssSelector("div[class='swatch-attribute color'] div[role='listbox']"));
+   	List<WebElement> colorSelected = allColors.findElements(By.tagName("div"));
+   	
+   	int colorCount = colorSelected.size();
+   	int randomColor = random.nextInt(colorCount);
+   	colorSelected.get(randomColor).click();
+   	
+   	WebElement addToCardButton = driver.findElement(By.id("product-addtocart-button"));
+   	addToCardButton.click();
+   	
+   	
+   	WebElement messageResulte = driver.findElement(By.className("message-success"));
+   //	Boolean msg = messageResulte.getText().contains("You added");
+   	
+   org.testng.Assert.assertEquals(messageResulte.getText().contains("You added"), true);
+   	
+		
+	}
+	@Test(priority = 5 )
+	public void addWomenItem() throws InterruptedException{
 	
 		WebElement addToWemon = driver.findElement(By.id("ui-id-4"));
 		addToWemon.click();
@@ -148,8 +200,7 @@ String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
 		indexItem.click();
 		
 		
-		
-		WebElement AddSizeItem = driver.findElement(By.cssSelector("div[class='swatch-attribute size'] div[role='listbox']"));
+		WebElement AddSizeItem = driver.findElement(By.cssSelector(".swatch-attribute-options.clearfix"));
 		List<WebElement> listOfSize = AddSizeItem.findElements(By.tagName("div"));
 		int listSizeCount =  listOfSize.size();
 		int randomListSize = random.nextInt(listSizeCount);
@@ -165,7 +216,7 @@ String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
 		WebElement addToCardWemonBtn = driver.findElement(By.id("product-addtocart-button"));
 		addToCardWemonBtn.click();
 		
-		WebElement addedSuccess = driver.findElement(By.className("message-success"));
+		WebElement addedSuccess = driver.findElement(By.cssSelector(".message-success.success.message"));
 		String added = addedSuccess.getText();
 		boolean Actual = added.contains("You added");
 		//boolean ExpectedValue = true ; 
@@ -173,13 +224,29 @@ String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
 		org.testng.Assert.assertEquals(Actual, true);
 		
 		
+		// Review Section
+		
+		driver.navigate().refresh();
 		
 		WebElement review = driver.findElement(By.id("tab-label-reviews-title"));
 		review.click();
 		
-		WebElement raiting = driver.findElement(By.id("review"));
-		raiting.click();
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("window.scrollTo(0,1200)");
 		
+		WebElement RatingStars = driver.findElement(By.cssSelector(".control.review-control-vote"));
+
+		;
+
+		Thread.sleep(2000);
+
+//		RatingStars.findElements(By.tagName("label")).get(2).click();
+
+		String[] ids = { "Rating_1", "Rating_2", "Rating_3", "Rating_4", "Rating_5" };
+		int randomIndex = random.nextInt(ids.length);
+		WebElement element = driver.findElement(By.id(ids[randomIndex]));
+		((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+
 		WebElement nickname= driver.findElement(By.id("nickname_field"));
 		nickname.sendKeys("Mimas");
 		
@@ -190,9 +257,15 @@ String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
 		WebElement reviewfield= driver.findElement(By.id("review_field"));
 		reviewfield.sendKeys(" I Will Add it ");
 		
-		WebElement reviewBtn= driver.findElement(By.xpath("//button[@type='submit']"));
+		WebElement reviewBtn= driver.findElement(By.cssSelector(".action.submit.primary"));
 		reviewBtn.click();
 		
+		
+
+		String ActualReview = driver.findElement(By.cssSelector(".message-success.success.message")).getText();
+		String ExcpectedReview = "You submitted your review for moderation.";
+		
+		org.testng.Assert.assertEquals(ActualReview, ExcpectedReview);
 		
 		
 		
@@ -208,58 +281,7 @@ String WelcomeMessage = driver.findElement(By.className("logged-in")).getText();
 		
 	
 
-	/*
-	@Test(priority = 4)
-	  public void addToMenSection()throws InterruptedException
-	{
-		
-		
-        WebElement MenSection = driver.findElement(By.id("ui-id-5"));
-		
-		MenSection.click();
-     	 
-     	// WebElement olOfMenItems = driver.findElement(By.className("product-items"));
-     	 
-     	WebElement olOfMenItems = driver.findElement(By.className("product-items"));
-		
-     	 List <WebElement> listOfItems = olOfMenItems.findElements(By.tagName("li"));
-     	 int AllItems = listOfItems.size();
-     	 
-     	 int randomIndexOfItem = random.nextInt(AllItems);
-     	listOfItems.get(randomIndexOfItem).click();
-     	
-     	
-		
-     	WebElement sizeOfItem = driver.findElement(By.cssSelector(".swatch-attribute-options.clearfix"));
-         List<WebElement> AllSize = sizeOfItem.findElements(By.className("swatch-option"));
-		
-     	int AllSizeCount = AllSize.size();
-     	int randomSizeIndex = random.nextInt(AllSizeCount);
-     	AllSize.get(randomSizeIndex).click();
-     	
-     	
-     	
-     	
-     	
-     	WebElement allColors= driver.findElement(By.cssSelector("div[class='swatch-attribute color'] div[role='listbox']"));
-     	List<WebElement> colorSelected = allColors.findElements(By.tagName("div"));
-     	
-     	int colorCount = colorSelected.size();
-     	int randomColor = random.nextInt(colorCount);
-     	colorSelected.get(randomColor).click();
-     	
-     	WebElement addToCardButton = driver.findElement(By.id("product-addtocart-button"));
-     	addToCardButton.click();
-     	
-     	
-     	WebElement messageResulte = driver.findElement(By.className("message-success"));
-     //	Boolean msg = messageResulte.getText().contains("You added");
-     	
-     org.testng.Assert.assertEquals(messageResulte.getText().contains("You added"), true);
-     	
-		
-	}
-	*/
+	
 	
 	
 	

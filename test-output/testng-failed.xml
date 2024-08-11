@@ -5,7 +5,7 @@
     <classes>
       <class name="magentoWebSiteTest.myFristTest">
         <methods>
-          <include name="addToWemonCard"/>
+          <include name="addWomenItem"/>
           <include name="setupTest"/>
         </methods>
       </class> <!-- magentoWebSiteTest.myFristTest -->
